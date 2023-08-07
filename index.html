@@ -4,10 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <script src="./scripts/game_board.js" defer></script>
+    <script type="module" src="./scripts/app.js" defer></script>
+    <script type="module" src="./scripts/game_board.js" defer></script>
     <title>Tic Tac Toe</title>
 </head>
 <body>
+    <div id="welcome-modal-container" class="active">
+        <div id="welcome-modal-flex">
+            <label for="grid-size-input">What size would you like the grid? (3 => 3*3)</label>
+            <input id="grid-size-input" name="grid-size-input" type="number">
+            <button type="button" id="confirm-grid-size-btn">Confirm</button>
+        </div>
+    </div>
+
    <div class="outer-container">
     <div class="inner-grid"></div>
    </div> 
