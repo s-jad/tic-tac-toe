@@ -125,11 +125,26 @@ body {
 div[id^="player"][id$="card"] {
     padding: 1rem;
     border-radius: 8px;
+    scale: 1;
+    border: none;
+    box-shadow: none;
+    transition: scale 200ms ease-in-out,
+                border 200ms ease-in-out,
+                box-shadow 200ms ease-in-out;
+}
+
+div[id^="player"][id$="card"].current-player {
+    scale: 1.2;
+    border: 1px solid hsl(var(--base-hue), var(--sat-5), var(--light-5));
+    box-shadow: 0 2px 5px hsl(var(--base-hue), var(--sat-5), var(--light-5));
+    transition: scale 200ms ease-in-out,
+                border 200ms ease-in-out,
+                box-shadow 200ms ease-in-out;
 }
 
 .inner-grid {
     --bg-hue: calc(var(--base-hue) - 110);
-    background: hsl(var(--bg-hue), var(--sat-90), var(--light-90));
+    background: hsl(var(--bg-hue), var(--sat-5), var(--light-90));
     border-radius: 8px;
     min-height: 90%;
     min-width: 90%;
