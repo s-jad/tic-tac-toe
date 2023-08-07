@@ -1,3 +1,5 @@
+import { App } from "./app.js"
+
 export const GameBoard = ((doc) => {
     // Game State
     let state = {
@@ -11,31 +13,52 @@ export const GameBoard = ((doc) => {
         playerColors: [],
 
         winningLineLength: 3,
-    };
 
+        currentMarkedGrid: [],
+    };
 
 
     // PRIVATE FUNCTIONS
     const log = (msg) => {
         console.log(`LOG[${Date.now()}] => ${msg}`);
-    }
+    };
 
     const setGridNumber = (gridSize) => {
-        console.log(`setGridNumber => GridSize:: ${gridSize}`);
         state.gridNumber = gridSize * gridSize
-    }
+    };
 
     const setWinningLineLength = (len) => {
         state.winningLineLength = len;
     };
 
     const markWithPlayerColor = (square) => {
-        square.style.background = `hsla(var(--${state.players[state.currentPlayerIndex]}-color), var(--sat-90), var(--(light-50)))`;
-    }
+        const hue = `--${state.players[state.currentPlayerIndex]}-color`;
+        square.style.background = `hsl(var(${hue}), var(--sat-90), var(--light-30))`;
+
+    };
+
+    const addSquareToMarked = (square) => {
+        state.currentMarkedGrid.push(square);
+        console.log(state.currentMarkedGrid);
+    };
+
+    const switchCurrentPlayer = () => {
+        // Remove current-player from display
+        const currentPlayerCardSelector = `#${state.players[state.currentPlayerIndex]}-card`;
+        const currentPlayerCard = document.querySelector(currentPlayerCardSelector);
+        currentPlayerCard.classList.remove("current-player");
+
+        // Move index, wrap around when on last player 
+        state.currentPlayerIndex = (state.currentPlayerIndex + 1) % state.players.length;
+
+        // Add current-player from display
+        const nextPlayerCardSelector = `#${state.players[state.currentPlayerIndex]}-card`;
+        const nextPlayerCard = document.querySelector(nextPlayerCardSelector);
+        nextPlayerCard.classList.add("current-player");
+    };
 
     // PUBLIC FUNCTIONS
     const setSelectedNumColumns = (size) => {
-        console.log(`setSelectedGridSize => GridSize:: ${size}`);
         state.selectedNumColumns = size;
     };
 
@@ -75,6 +98,10 @@ export const GameBoard = ((doc) => {
         }
     };
 
+    const getCurrentBoard = () => {
+        return state.currentMarkedGrid;
+    };
+
     const startGame = () => {
         log("Game started!");
 
@@ -90,16 +117,18 @@ export const GameBoard = ((doc) => {
             square.classList.add("square");
             square.classList.add(`num-${i + 1}`);
 
-            square.addEventListener('click', function(square) {
-                markWithPlayerColor(square);
+            square.addEventListener('click', function(e) {
+                square.classList.add(state.players[state.currentPlayerIndex]);
+                console.log(square);
+                markWithPlayerColor(e.target);
+                addSquareToMarked(square);
+                App.addSquareToCurrentPlayerMoves(square);
+                App.checkWinner();
+                switchCurrentPlayer();
             });
 
             grid.appendChild(square);
         }
-    };
-
-    const playerTurn = () => {
-
     };
 
     const endGame = () => {
@@ -107,15 +136,16 @@ export const GameBoard = ((doc) => {
     };
 
 
-    const checkWinner = () => {
+    const checkWinner = (sq) => {
 
     }
 
     return {
+        getCurrentBoard,
+        getPlayers,
         setSelectedNumColumns,
         setNumberOfPlayers,
         setWinningLineLength,
-        getPlayers,
         startGame,
         endGame,
     };
