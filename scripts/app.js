@@ -1,11 +1,12 @@
 import { GameBoard } from "./game_board.js"
 
-const App = (() => {
+export const App = (() => {
     let gameState = {
         welcome: 1,
         gameStarted: 0,
         gameWon: 0,
         gameDraw: 0,
+        currentPlayerMoves: [],
 
         // Default values, can be modified by players
     };
@@ -20,7 +21,31 @@ const App = (() => {
         }
     };
 
+    const addSquareToCurrentPlayerMoves = (sq) => {
+        const sqClassList = sq.classList.toString();
+        const playerNumber = sqClassList.match(/player-(\d+)/);
+        const sqNumber = sqClassList.match(/num-(\d+)/);
+
+        const currentMove = { player: playerNumber[1], square: sqNumber[1] };
+        gameState.currentPlayerMoves.push(currentMove);
+        sortCurrentPlayerMoves();
+    };
+
+    const sortCurrentPlayerMoves = () => {
+        gameState.currentPlayerMoves.sort((a, b) => a.square - b.square);
+    }
+
+    const checkWinner = () => {
+        console.log("Inside checkWinner");
+        for (let i = 0; i < gameState.currentPlayerMoves.length; i++) {
+            console.log(gameState.currentPlayerMoves[i]);
+        }
+
+    };
+
     return {
+        addSquareToCurrentPlayerMoves,
+        checkWinner,
         switchState,
     };
 
