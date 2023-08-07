@@ -13,11 +13,16 @@
         <div id="welcome-modal-flex">
             <label for="grid-size-input">What size would you like the grid? (3 => 3*3)</label>
             <input id="grid-size-input" name="grid-size-input" type="number">
-            <button type="button" id="confirm-grid-size-btn">Confirm</button>
+            <label for="num-players-input">How many people would like to play?</label>
+            <input id="num-players-input" name="num-players-input" type="number">
+            <label for="winning-line-input">How many marks in a row to win?</label>
+            <input id="winning-line-input" name="winning-line-input" type="number">
+            <button type="button" id="welcome-modal-confirm-btn">Confirm</button>
         </div>
     </div>
 
    <div class="outer-container">
+    <div id="player-display"></div>
     <div class="inner-grid"></div>
    </div> 
 </body>
