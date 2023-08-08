@@ -20,10 +20,6 @@ export const GameBoard = ((doc) => {
 
 
     // PRIVATE FUNCTIONS
-    const log = (msg) => {
-        console.log(`LOG[${Date.now()}] => ${msg}`);
-    };
-
     const resetGameBoard = () => {
         state = {
             gridNumber: 9,
@@ -43,12 +39,10 @@ export const GameBoard = ((doc) => {
         const playerDisplay = doc.getElementById('player-display');
         const playerDisplayDivs = Array.from(playerDisplay.querySelectorAll('div[id^="player"][id$="card"]'));
         playerDisplayDivs.forEach(div => playerDisplay.removeChild(div));
-        console.log(playerDisplay);
 
         const gameGrid = doc.getElementById('inner-grid');
         const gridSquares = Array.from(gameGrid.querySelectorAll('.square'));
         gridSquares.forEach(square => gameGrid.removeChild(square));
-        console.log(gameGrid)
     };
 
     const setGridNumber = (gridSize) => {
@@ -74,7 +68,7 @@ export const GameBoard = ((doc) => {
         // Move index, wrap around when on last player 
         state.currentPlayerIndex = (state.currentPlayerIndex + 1) % state.players.length;
 
-        // Add current-player from display
+        // Add current-player to display
         const nextPlayerCardSelector = `#${state.players[state.currentPlayerIndex]}-card`;
         const nextPlayerCard = document.querySelector(nextPlayerCardSelector);
         nextPlayerCard.classList.add("current-player");
@@ -102,36 +96,33 @@ export const GameBoard = ((doc) => {
             const horizontalWin = checkWinnerHorizontal(currentStartingSq, currentPlayer);
             const verticalWin = checkWinnerVertical(currentStartingSq, currentPlayer);
 
+            const diagonalWin = checkWinnerDiagonal(currentStartingSq, currentPlayer);
+
             if (horizontalWin) {
-                console.log(`Horizontal: Player ${horizontalWin.winningPlayer} has won!`);
                 return horizontalWin;
             }
 
             if (verticalWin) {
-                console.log(`Vertical: Player ${verticalWin.winningPlayer} has won!`);
                 return verticalWin;
+            }
+
+            if (diagonalWin) {
+                return diagonalWin;
             }
         }
 
     };
 
     const checkWinnerHorizontal = (index, player) => {
-        console.log(`index => ${index}`);
-        console.log(`player => ${player}`);
-
-
         const horizontalCheck = state.currentPlayerMoves.filter(move =>
             move.player === player &&
             move.square >= index &&
             move.square < index + state.winningLineLength
         );
-        console.log("horizontalCheck");
-        console.log(horizontalCheck);
+
         if (horizontalCheck.length === state.winningLineLength) {
             const winningSquares = horizontalCheck.map((move) => move.square);
             const winningPlayer = horizontalCheck[0].player;
-            console.log(`checkWinnerHorizontal:: Winning player => ${winningPlayer}`);
-            console.log(`checkWinnerHorizontal:: Winning squares => ${winningSquares}`);
             return { winningSquares, winningPlayer };
         }
     };
@@ -149,6 +140,49 @@ export const GameBoard = ((doc) => {
             return { winningSquares, winningPlayer };
         }
     };
+
+    const checkWinnerDiagonal = (index, player) => {
+        const colNum = parseInt(state.selectedNumColumns);
+        const playerMoves = state.currentPlayerMoves.filter(move => move.player === player && move.square >= index);
+        let currentIndexRight = index;
+        let currentIndexLeft = index;
+        let diagonalBufferLeft = [];
+        let diagonalBufferRight = [];
+
+        for (let i = 0; i < state.winningLineLength; i++) {
+            const currentMove = playerMoves.filter(move => {
+                return move.square === currentIndexRight;
+            });
+
+            if (currentMove.length !== 0) {
+                diagonalBufferRight.push(currentMove[0]);
+            }
+
+            if (diagonalBufferRight.length >= state.winningLineLength) {
+                const winningSquares = diagonalBufferRight.map((move) => move.square);
+                const winningPlayer = diagonalBufferRight[0].player;
+                return { winningSquares, winningPlayer };
+            }
+            currentIndexRight = currentIndexRight + colNum + 1;
+        };
+
+        for (let i = 0; i < state.winningLineLength; i++) {
+            const currentMove = playerMoves.filter(move => {
+                return move.square === currentIndexLeft
+            });
+
+            if (currentMove.length !== 0) {
+                diagonalBufferLeft.push(currentMove[0]);
+            }
+
+            if (diagonalBufferLeft.length >= state.winningLineLength) {
+                const winningSquares = diagonalBufferLeft.map((move) => move.square);
+                const winningPlayer = diagonalBufferLeft[0].player;
+                return { winningSquares, winningPlayer };
+            }
+            currentIndexLeft = currentIndexLeft + colNum - 1;
+        };
+    }
 
     // PUBLIC FUNCTIONS
     const setSelectedNumColumns = (size) => {
@@ -190,8 +224,6 @@ export const GameBoard = ((doc) => {
     };
 
     const startGame = () => {
-        log("Game started!");
-
         const root = document.documentElement;
         // Set the grid-size css variable to determine number of squares
         root.style.setProperty("--grid-size", state.selectedNumColumns);
@@ -206,15 +238,14 @@ export const GameBoard = ((doc) => {
 
             square.addEventListener('click', function(e) {
                 square.classList.add(state.players[state.currentPlayerIndex]);
-                console.log(square);
                 markWithPlayerColor(e.target);
                 addSquareToCurrentPlayerMoves(square);
                 const winningDetails = checkWinner();
 
                 if (winningDetails) {
-                    console.log(`Winning details => ${winningDetails}`);
                     state.winner = winningDetails.winningPlayer;
                     state.winningSquares = winningDetails.winningSquares;
+                    console.log(`Winning details => ${state.winner} , ${state.winningSquares}`);
                     App.setGameWon();
                     App.switchState();
                 }
@@ -226,7 +257,31 @@ export const GameBoard = ((doc) => {
     };
 
     const displayDraw = () => {
-        console.log("Game was a draw!");
+        const displayDrawModal = document.getElementById('display-draw-container');
+        const displayDrawFlex = document.getElementById('display-draw-flex');
+        const drawDisplay = document.getElementById('draw-display');
+        const newGameBtn = displayDrawFlex.querySelector('.new-game-btn');
+        const welcomeModal = document.getElementById('welcome-modal-container');
+        const welcomeModalFlex = document.getElementById('welcome-modal-flex');
+
+        winnerDisplay.innerText = `Player ${state.winner} has won!`;
+
+        newGameBtn.addEventListener('click', function() {
+            // Close the display winner modal
+            displayDrawModal.classList.remove('active');
+            displayDrawFlex.classList.add('fade');
+
+            // Reset gameState and board state
+            App.resetGameState();
+            resetGameBoard();
+
+            // Open the welcome modal
+            welcomeModal.classList.add('active');
+            welcomeModalFlex.classList.remove('fade');
+        });
+
+        displayDrawModal.classList.add('active');
+        displayDrawFlex.classList.remove('fade');
     };
 
     const displayWinner = () => {
@@ -238,6 +293,7 @@ export const GameBoard = ((doc) => {
         const welcomeModalFlex = document.getElementById('welcome-modal-flex');
 
         winnerDisplay.innerText = `Player ${state.winner} has won!`;
+
         newGameBtn.addEventListener('click', function() {
             // Close the display winner modal
             displayWinnerModal.classList.remove('active');
@@ -257,9 +313,8 @@ export const GameBoard = ((doc) => {
     };
 
     const endGame = () => {
-        log("Game ended!");
-    };
 
+    };
 
     return {
         getCurrentBoard,
