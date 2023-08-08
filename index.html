@@ -4,19 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <script type="module" src="./scripts/display.js" defer></script>
     <script type="module" src="./scripts/app.js" defer></script>
     <script type="module" src="./scripts/game_board.js" defer></script>
     <title>Tic Tac Toe</title>
 </head>
 <body>
-    <div id="welcome-modal-container" class="active">
+    <div id="welcome-animation" class="active">
+        <div id="animation-container">
+            <div class="cross-line"></div>
+            <div class="cross x-1"></div>
+            <div class="cross x-2"></div>
+            <div class="cross x-3"></div>
+            <div class="circle o-1"></div>
+            <div class="circle o-2"></div>
+            <div class="square square-1"></div>
+            <div class="square square-2"></div>
+            <div class="square square-3"></div>
+            <div class="square square-4"></div>
+            <div class="square square-5"></div>
+            <div class="square square-6"></div>
+            <div class="square square-7"></div>
+            <div class="square square-8"></div>
+            <div class="square square-9"></div>
+        </div>
+    </div>
+
+    <div id="welcome-modal-container">
         <div id="welcome-modal-flex">
             <label for="grid-size-input">What size would you like the grid? (3 => 3*3)</label>
-            <input id="grid-size-input" name="grid-size-input" type="number">
+            <input id="grid-size-input" name="grid-size-input" type="number" min="3", max="20">
             <label for="num-players-input">How many people would like to play?</label>
-            <input id="num-players-input" name="num-players-input" type="number">
-            <label for="winning-line-input">How many marks in a row to win?</label>
-            <input id="winning-line-input" name="winning-line-input" type="number">
+            <input id="num-players-input" name="num-players-input" type="number" min="2" max="8">
+            <label for="winning-line-input">How how long is a winning line?</label>
+            <input id="winning-line-input" name="winning-line-input" type="number" min="3"
+            max="20">
             <button type="button" id="welcome-modal-confirm-btn">Confirm</button>
         </div>
     </div>
@@ -24,6 +46,7 @@
    <div id="display-winner-container">
        <div id="display-winner-flex" class="fade">
            <h3 id="winner-display"></h3>
+            <div id="display-winning-grid"></div>
            <button class="new-game-btn" type="button">New Game</button>
        </div>
    </div> 

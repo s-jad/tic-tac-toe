@@ -57,6 +57,48 @@ export const Display = ((doc) => {
         displayWinnerFlex.classList.remove('fade');
     };
 
+    const welcomeAnimation = () => {
+        const welcomeAnimationContainer = doc.getElementById('welcome-animation');
+        const squares = Array.from(welcomeAnimationContainer.querySelectorAll('.square'));
+        const crosses = Array.from(welcomeAnimationContainer.querySelectorAll('.cross'));
+        const circles = Array.from(welcomeAnimationContainer.querySelectorAll('.circle'));
+        const crossLine = welcomeAnimationContainer.querySelector('.cross-line');
+
+        const crossesAndCircles = crosses.map((cross, index) => {
+            return [cross, circles[index]];
+        }).flat();
+
+        squares.forEach((square, index) => {
+            setTimeout(() => {
+                square.classList.add('settle');
+                console.log(square);
+            }, 210 * index);
+        });
+
+        setTimeout(() => {
+            crossesAndCircles.forEach((crossOrCircle, index) => {
+                setTimeout(() => {
+                    crossOrCircle.classList.add('active');
+                }, 310 * index);
+            });
+        }, 210 * squares.length);
+
+        setTimeout(() => {
+            setTimeout(() => {
+                crossLine.classList.add('active');
+                crossesAndCircles.forEach((crossOrCircle) => {
+                    crossOrCircle.classList.remove('active');
+                });
+            }, 350);
+        }, 210 * squares.length + 310 * crossesAndCircles.length);
+
+        setTimeout(() => {
+            welcomeAnimationContainer.classList.remove("active");
+            setupWelcomeScreen();
+        }, 6600);
+
+    };
+
     const setupWelcomeScreen = () => {
         // Welcome Screen
         const welcomeModal = document.getElementById("welcome-modal-container");
@@ -66,7 +108,10 @@ export const Display = ((doc) => {
         const numPlayersInput = document.getElementById("num-players-input");
         const winningLineInput = document.getElementById("winning-line-input");
 
-        // 
+        // Open the modal
+        welcomeModal.classList.add("active");
+
+        // Add event listener to confirm button
         welcomeModalConfirmBtn.addEventListener('click', function() {
             // Default to 3 x 3 grid if no input given
             if (gridSizeInput.value === undefined) {
@@ -99,6 +144,7 @@ export const Display = ((doc) => {
     };
 
     return {
+        welcomeAnimation,
         setupWelcomeScreen,
         displayWinner,
         displayDraw
@@ -107,4 +153,4 @@ export const Display = ((doc) => {
 })(document);
 
 // Initiates the Game
-Display.setupWelcomeScreen();
+Display.welcomeAnimation();
