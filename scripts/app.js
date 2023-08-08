@@ -6,47 +6,44 @@ export const App = (() => {
         gameStarted: 0,
         gameWon: 0,
         gameDraw: 0,
-        currentPlayerMoves: [],
 
         // Default values, can be modified by players
     };
 
+    const setGameWon = () => {
+        gameState.gameWon = gameState.gameWon ^ 1;
+    };
+
+    const resetGameState = () => {
+        gameState = {
+            welcome: 1,
+            gameStarted: 0,
+            gameWon: 0,
+            gameDraw: 0,
+        };
+    };
+
     const switchState = () => {
+        console.log("Game State::");
+        console.log(gameState);
         if (gameState.welcome === 1) {
             gameState.welcome = gameState.welcome ^ 1;
             gameState.gameStarted = gameState.gameStarted ^ 1;
             GameBoard.startGame();
-        } else if (gameState.gameStarted === 1) {
-            console.log("Games already running");
+        } else if (gameState.gameStarted === 1 && gameState.gameWon === 1) {
+            gameState.gameStarted = gameState.gameStarted ^ 1;
+            GameBoard.displayWinner();
+        } else if (gameState.gameStarted === 1 && gameState.gameDraw === 1) {
+            gameState.gameStarted = gameState.gameStarted ^ 1;
+            GameBoard.displayDraw();
         }
     };
 
-    const addSquareToCurrentPlayerMoves = (sq) => {
-        const sqClassList = sq.classList.toString();
-        const playerNumber = sqClassList.match(/player-(\d+)/);
-        const sqNumber = sqClassList.match(/num-(\d+)/);
-
-        const currentMove = { player: playerNumber[1], square: sqNumber[1] };
-        gameState.currentPlayerMoves.push(currentMove);
-        sortCurrentPlayerMoves();
-    };
-
-    const sortCurrentPlayerMoves = () => {
-        gameState.currentPlayerMoves.sort((a, b) => a.square - b.square);
-    }
-
-    const checkWinner = () => {
-        console.log("Inside checkWinner");
-        for (let i = 0; i < gameState.currentPlayerMoves.length; i++) {
-            console.log(gameState.currentPlayerMoves[i]);
-        }
-
-    };
 
     return {
-        addSquareToCurrentPlayerMoves,
-        checkWinner,
         switchState,
+        setGameWon,
+        resetGameState,
     };
 
 })();
@@ -81,8 +78,6 @@ welcomeModalConfirmBtn.addEventListener('click', function() {
     } else {
         GameBoard.setWinningLineLength(winningLineInput.value);
     }
-
-    GameBoard.getPlayers();
 
     // Switch gameState to gameStarted
     App.switchState();
