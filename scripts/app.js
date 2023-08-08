@@ -14,6 +14,10 @@ export const App = (() => {
         gameState.gameWon = gameState.gameWon ^ 1;
     };
 
+    const setGameDraw = () => {
+        gameState.gameDraw = gameState.gameDraw ^ 1;
+    };
+
     const resetGameState = () => {
         gameState = {
             welcome: 1,
@@ -39,10 +43,10 @@ export const App = (() => {
         }
     };
 
-
     return {
         switchState,
         setGameWon,
+        setGameDraw,
         resetGameState,
     };
 
