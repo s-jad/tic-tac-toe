@@ -1,4 +1,5 @@
 import { GameBoard } from "./game_board.js"
+import { Display } from "./display.js"
 
 export const App = (() => {
     let gameState = {
@@ -36,10 +37,10 @@ export const App = (() => {
             GameBoard.startGame();
         } else if (gameState.gameStarted === 1 && gameState.gameWon === 1) {
             gameState.gameStarted = gameState.gameStarted ^ 1;
-            GameBoard.displayWinner();
+            Display.displayWinner(GameBoard.getWinner());
         } else if (gameState.gameStarted === 1 && gameState.gameDraw === 1) {
             gameState.gameStarted = gameState.gameStarted ^ 1;
-            GameBoard.displayDraw();
+            Display.displayDraw();
         }
     };
 
@@ -51,43 +52,4 @@ export const App = (() => {
     };
 
 })();
-
-// Welcome Screen
-
-const welcomeModal = document.getElementById("welcome-modal-container");
-const welcomeModalFlex = document.getElementById("welcome-modal-flex");
-const welcomeModalConfirmBtn = document.getElementById("welcome-modal-confirm-btn");
-const gridSizeInput = document.getElementById("grid-size-input");
-const numPlayersInput = document.getElementById("num-players-input");
-const winningLineInput = document.getElementById("winning-line-input");
-
-welcomeModalConfirmBtn.addEventListener('click', function() {
-    // Default to 3 x 3 grid if no input given
-    if (gridSizeInput.value === undefined) {
-        GameBoard.setSelectedNumColumns(3);
-    } else {
-        GameBoard.setSelectedNumColumns(gridSizeInput.value);
-    }
-
-    // Default to 2 players if no input given
-    if (numPlayersInput.value === undefined) {
-        GameBoard.setNumberOfPlayers(2);
-    } else {
-        GameBoard.setNumberOfPlayers(numPlayersInput.value);
-    }
-
-    // Default to 3 in-a-row if no input given
-    if (numPlayersInput.value === undefined) {
-        GameBoard.setWinningLineLength(3);
-    } else {
-        GameBoard.setWinningLineLength(winningLineInput.value);
-    }
-
-    // Switch gameState to gameStarted
-    App.switchState();
-
-    // Close the welcomeModal
-    welcomeModal.classList.remove("active");
-    welcomeModalFlex.classList.add("fade");
-});
 
