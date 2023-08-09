@@ -109,7 +109,18 @@ export const GameBoard = ((doc) => {
         square.removeEventListener('click', getSquareEvents);
     };
 
+    const checkTicTacToeWinner = () => {
+        console.log("TODO checkTicTacToeWinner");
+    };
+
+
     const checkWinner = () => {
+        const ticTacToe = document.getElementById('tic-tac-toe-radio');
+
+        if (ticTacToe.checked) {
+            return checkTicTacToeWinner()
+        }
+
         for (let i = 0; i < state.currentPlayerMoves.length; i++) {
             const currentPlayer = state.currentPlayerMoves[i].player;
             const currentStartingSq = state.currentPlayerMoves[i].square;
@@ -211,7 +222,6 @@ export const GameBoard = ((doc) => {
         }
     };
 
-
     // PUBLIC FUNCTIONS
     const setSelectedNumColumns = (size) => {
         state.selectedNumColumns = size;
@@ -237,12 +247,22 @@ export const GameBoard = ((doc) => {
             const playerColor = `--player-${i + 1}-color`;
             const hueJump = Math.floor(360 / num);
             const playerHue = parseInt(baseHue) + (i * hueJump);
+
+            // For later use in animations
+            state.playerColors.push({ playerName, playerColor, playerHue });
+
             root.style.setProperty(playerColor, playerHue);
 
             const playerDisplayDiv = document.createElement('div');
             playerDisplayDiv.id = `player-${i + 1}-card`;
             playerDisplayDiv.style.background = `hsl(var(${playerColor}), var(--sat-50), var(--light-70))`;
             playerDisplayDiv.innerText = `Player ${i + 1}`;
+
+
+            // Make player 1 current player
+            if (i === 0) {
+                playerDisplayDiv.classList.add("current-player");
+            }
             playerDisplay.appendChild(playerDisplayDiv);
         }
     };
@@ -258,6 +278,16 @@ export const GameBoard = ((doc) => {
     const getWinningSquares = () => {
         return state.winningSquares;
     }
+
+    const getPlayerColors = () => {
+        console.log(state.playerColors);
+        return state.playerColors;
+    }
+
+    const getNumberOfPlayers = () => {
+        console.log(`number of players: ${state.players.length}`);
+        return state.players.length;
+    };
 
     const startGame = () => {
         const root = document.documentElement;
@@ -284,6 +314,8 @@ export const GameBoard = ((doc) => {
         getCurrentBoard,
         getWinner,
         getWinningSquares,
+        getPlayerColors,
+        getNumberOfPlayers,
         setSelectedNumColumns,
         setNumberOfPlayers,
         setWinningLineLength,
