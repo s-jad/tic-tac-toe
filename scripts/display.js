@@ -27,6 +27,53 @@ export const Display = ((doc) => {
         displayDrawFlex.classList.remove('fade');
     };
 
+    const checkWinnerInClassList = (player, list) => {
+        return list.match(player);
+    };
+
+
+    const winningAnimation = () => {
+        const gameGrid = document.getElementById('inner-grid');
+        const squares = Array.from(gameGrid.querySelectorAll(".square"));
+        const winner = "player-" + GameBoard.getWinner();
+
+        let winners = [];
+        let losers = [];
+
+        squares.forEach((square) => {
+            const classList = square.classList.toString();
+            if (checkWinnerInClassList(winner, classList)) {
+                winners.push(square);
+            } else {
+                losers.push(square);
+            }
+        });
+
+        const winnerHue = (360 / GameBoard.getNumberOfPlayers()) * (GameBoard.getWinner() - 1);
+
+        losers.forEach((square, index) => {
+            setTimeout(() => {
+                square.classList.add('losing-square');
+            }, 20 * index);
+        });
+
+        winners.forEach((square, index) => {
+            setTimeout(() => {
+                square.classList.add('winning-square');
+            }, 400 * index);
+            setTimeout(() => {
+                square.style.boxShadow = `0 0 20px hsl(${winnerHue}, var(--sat-90), 70%),
+                                          inset 0 0 20px hsl(${winnerHue}, var(--sat-90), 70%),
+                                          inset 0 0 5px hsl(${winnerHue}, var(--sat-90), 90%)`;
+            }, 650 * index);
+        });
+
+
+        setTimeout(() => {
+            displayWinner(GameBoard.getWinner);
+        }, winners.length * 600 + 400);
+    };
+
     const displayWinner = () => {
         const displayWinnerModal = document.getElementById('display-winner-container');
         const displayWinnerFlex = document.getElementById('display-winner-flex');
@@ -70,7 +117,6 @@ export const Display = ((doc) => {
         squares.forEach((square, index) => {
             setTimeout(() => {
                 square.classList.add('settle');
-                console.log(square);
             }, 210 * index);
         });
 
@@ -232,9 +278,9 @@ export const Display = ((doc) => {
     return {
         welcomeAnimation,
         setupWelcomeScreen,
-        displayWinner,
+        displayWelcomeScreen,
+        winningAnimation,
         displayDraw,
-        displayWelcomeScreen
     };
 
 })(document);

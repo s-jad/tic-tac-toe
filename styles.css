@@ -214,7 +214,24 @@ div[id^="player"][id$="card"].current-player {
     background: hsl(var(--bg-hue), var(--sat-50), var(--light-5));
 
     border-radius: 3px;
-    transition: background 150ms var(--animate-slow-start);
+    scale: 1;
+    box-shadow: none;
+    filter: none;
+    opacity: 1;
+    transition: background 150ms var(--animate-slow-start),
+                filter 300ms var(--animate-snap),
+                opacity 300ms var(--animate-snap),
+                scale 300ms var(--animate-snap),
+                box-shadow 300ms var(--animate-snap);
+}
+
+#inner-grid > .square.winning-square {
+    position: relative;
+    scale: 1.3;
+}
+
+#inner-grid > .square.losing-square {
+    opacity: 0;
 }
 
 /* MODALS */
@@ -363,6 +380,10 @@ div[id^="player"][id$="card"].current-player {
 
 #custom-options > input {
     margin-bottom: 0.5rem;
+}
+
+#custom-options > input:last-child {
+    margin-bottom: 2rem;
 }
 
 #tic-tac-toe-description,
