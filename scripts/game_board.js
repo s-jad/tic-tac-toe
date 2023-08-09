@@ -56,7 +56,10 @@ export const GameBoard = ((doc) => {
     const markWithPlayerColor = (square) => {
         const hue = `--${state.players[state.currentPlayerIndex]}-color`;
         square.style.background = `hsl(var(${hue}), var(--sat-90), var(--light-30))`;
+    };
 
+    const removeSquareEvents = (square) => {
+        square.removeEventListener('click', getSquareEvents);
     };
 
     const switchCurrentPlayer = () => {
@@ -87,6 +90,24 @@ export const GameBoard = ((doc) => {
     const sortCurrentPlayerMoves = () => {
         state.currentPlayerMoves.sort((a, b) => a.square - b.square);
     }
+
+    const getSquareEvents = (event) => {
+        const square = event.target;
+        square.classList.add(state.players[state.currentPlayerIndex]);
+        markWithPlayerColor(square);
+        addSquareToCurrentPlayerMoves(square);
+        const winningDetails = checkWinner();
+
+        if (winningDetails) {
+            state.winner = winningDetails.winningPlayer;
+            state.winningSquares = winningDetails.winningSquares;
+            console.log(`Winning details => ${state.winner} , ${state.winningSquares}`);
+            App.setGameWon();
+            App.switchState();
+        }
+        switchCurrentPlayer();
+        removeSquareEvents(square);
+    };
 
     const checkWinner = () => {
         for (let i = 0; i < state.currentPlayerMoves.length; i++) {
@@ -244,21 +265,7 @@ export const GameBoard = ((doc) => {
             square.classList.add("square");
             square.classList.add(`num-${i + 1}`);
 
-            square.addEventListener('click', function(e) {
-                square.classList.add(state.players[state.currentPlayerIndex]);
-                markWithPlayerColor(e.target);
-                addSquareToCurrentPlayerMoves(square);
-                const winningDetails = checkWinner();
-
-                if (winningDetails) {
-                    state.winner = winningDetails.winningPlayer;
-                    state.winningSquares = winningDetails.winningSquares;
-                    console.log(`Winning details => ${state.winner} , ${state.winningSquares}`);
-                    App.setGameWon();
-                    App.switchState();
-                }
-                switchCurrentPlayer();
-            });
+            square.addEventListener('click', getSquareEvents);
 
             grid.appendChild(square);
         }
