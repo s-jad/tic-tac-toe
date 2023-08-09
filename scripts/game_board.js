@@ -58,10 +58,6 @@ export const GameBoard = ((doc) => {
         square.style.background = `hsl(var(${hue}), var(--sat-90), var(--light-30))`;
     };
 
-    const removeSquareEvents = (square) => {
-        square.removeEventListener('click', getSquareEvents);
-    };
-
     const switchCurrentPlayer = () => {
         // Remove current-player from display
         const currentPlayerCardSelector = `#${state.players[state.currentPlayerIndex]}-card`;
@@ -107,6 +103,10 @@ export const GameBoard = ((doc) => {
         }
         switchCurrentPlayer();
         removeSquareEvents(square);
+    };
+
+    const removeSquareEvents = (square) => {
+        square.removeEventListener('click', getSquareEvents);
     };
 
     const checkWinner = () => {
@@ -204,6 +204,13 @@ export const GameBoard = ((doc) => {
             currentIndexLeft = currentIndexLeft + colNum - 1;
         };
     }
+
+    const checkDraw = () => {
+        if (state.currentPlayerMoves.length === state.gridNumber * state.gridNumber) {
+            App.setGameDraw();
+        }
+    };
+
 
     // PUBLIC FUNCTIONS
     const setSelectedNumColumns = (size) => {
