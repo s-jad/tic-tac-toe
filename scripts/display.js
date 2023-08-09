@@ -2,14 +2,12 @@ import { App } from "./app.js"
 import { GameBoard } from "./game_board.js"
 
 export const Display = ((doc) => {
-    const displayDraw = (winner) => {
+    const displayDraw = () => {
         const displayDrawModal = document.getElementById('display-draw-container');
         const displayDrawFlex = document.getElementById('display-draw-flex');
         const newGameBtn = displayDrawFlex.querySelector('.new-game-btn');
         const welcomeModal = document.getElementById('welcome-modal-container');
         const welcomeModalFlex = document.getElementById('welcome-modal-flex');
-
-        winnerDisplay.innerText = `Player ${winner} has won!`;
 
         newGameBtn.addEventListener('click', function() {
             // Close the display winner modal
@@ -86,7 +84,7 @@ export const Display = ((doc) => {
         setTimeout(() => {
             setTimeout(() => {
                 crossLine.classList.add('active');
-                crossesAndCircles.forEach((crossOrCircle) => {
+                crossesAndCircles.forEach(crossOrCircle => {
                     crossOrCircle.classList.remove('active');
                 });
             }, 350);
@@ -99,6 +97,48 @@ export const Display = ((doc) => {
 
     };
 
+    const openCustomOptions = () => {
+        const customOptions = document.getElementById('custom-options');
+        customOptions.classList.remove('slide-in');
+    };
+
+    const closeCustomOptions = () => {
+        const customOptions = document.getElementById('custom-options');
+        customOptions.classList.add('slide-out');
+        setTimeout(() => {
+            customOptions.classList.add('slide-in');
+            customOptions.classList.remove('slide-out');
+        }, 310);
+    };
+
+    const openTicTacToeDescription = () => {
+        const ticTacToe = document.getElementById('tic-tac-toe-description');
+        ticTacToe.classList.remove('slide-in');
+    };
+
+    const closeTicTacToeDescription = () => {
+        const ticTacToe = document.getElementById('tic-tac-toe-description');
+        ticTacToe.classList.add('slide-out');
+        setTimeout(() => {
+            ticTacToe.classList.add('slide-in');
+            ticTacToe.classList.remove('slide-out');
+        }, 310);
+    };
+
+    const openConnectFourDescription = () => {
+        const customOptions = document.getElementById('connect-four-description');
+        customOptions.classList.remove('slide-in');
+    };
+
+    const closeConnectFourDescription = () => {
+        const connectFour = document.getElementById('connect-four-description');
+        connectFour.classList.add('slide-out');
+        setTimeout(() => {
+            connectFour.classList.add('slide-in');
+            connectFour.classList.remove('slide-out');
+        }, 310);
+    };
+
     const setupWelcomeScreen = () => {
         // Welcome Screen
         const welcomeModal = document.getElementById("welcome-modal-container");
@@ -107,31 +147,63 @@ export const Display = ((doc) => {
         const gridSizeInput = document.getElementById("grid-size-input");
         const numPlayersInput = document.getElementById("num-players-input");
         const winningLineInput = document.getElementById("winning-line-input");
+        const ticTacToeRadio = document.getElementById("tic-tac-toe-radio");
+        const connectFourRadio = document.getElementById("connect-four-radio");
+        const customRadio = document.getElementById("custom-radio");
+        const radioContainer = document.getElementById('radio-container');
 
         // Open the modal
         welcomeModal.classList.add("active");
 
+        const handleRadioChange = () => {
+            if (ticTacToeRadio.checked) {
+                closeCustomOptions();
+                closeConnectFourDescription();
+                openTicTacToeDescription();
+            } else if (connectFourRadio.checked) {
+                closeCustomOptions();
+                closeTicTacToeDescription();
+                openConnectFourDescription();
+            } else if (customRadio.checked) {
+                closeTicTacToeDescription();
+                closeConnectFourDescription();
+                openCustomOptions();
+            }
+        };
+
+        radioContainer.addEventListener('change', handleRadioChange);
+
         // Add event listener to confirm button
         welcomeModalConfirmBtn.addEventListener('click', function() {
-            // Default to 3 x 3 grid if no input given
-            if (gridSizeInput.value === undefined) {
-                GameBoard.setSelectedNumColumns(3);
-            } else {
-                GameBoard.setSelectedNumColumns(gridSizeInput.value);
-            }
-
-            // Default to 2 players if no input given
-            if (numPlayersInput.value === undefined) {
+            if (ticTacToeRadio.checked) {
                 GameBoard.setNumberOfPlayers(2);
-            } else {
-                GameBoard.setNumberOfPlayers(numPlayersInput.value);
-            }
-
-            // Default to 3 in-a-row if no input given
-            if (numPlayersInput.value === undefined) {
+                GameBoard.setSelectedNumColumns(3);
                 GameBoard.setWinningLineLength(3);
-            } else {
-                GameBoard.setWinningLineLength(winningLineInput.value);
+            } else if (connectFourRadio.checked) {
+                GameBoard.setNumberOfPlayers(2);
+                GameBoard.setSelectedNumColumns(8);
+                GameBoard.setWinningLineLength(4);
+            } else if (customRadio.checked) {
+                // Default to 3 x 3 grid if no input given
+                if (gridSizeInput.value === undefined) {
+                    GameBoard.setSelectedNumColumns(3);
+                } else {
+                    GameBoard.setSelectedNumColumns(gridSizeInput.value);
+                }
+
+                // Default to 2 players if no input given
+                if (numPlayersInput.value === undefined) {
+                    GameBoard.setNumberOfPlayers(2);
+                } else {
+                    GameBoard.setNumberOfPlayers(numPlayersInput.value);
+                }
+
+                // Default to 3 in-a-row if no input given
+                if (numPlayersInput.value === undefined) {
+                    GameBoard.setWinningLineLength(3);
+                } else {
+                    GameBoard.setWinningLineLength(winningLineInput.value);
+                }
             }
 
             // Switch gameState to gameStarted
@@ -143,11 +215,20 @@ export const Display = ((doc) => {
         });
     };
 
+    const displayWelcomeScreen = () => {
+        const welcomeModal = document.getElementById("welcome-modal-container");
+        const welcomeModalFlex = document.getElementById("welcome-modal-flex");
+
+        welcomeModal.classList.add('active');
+        welcomeModalFlex.classList.remove('fade');
+    };
+
     return {
         welcomeAnimation,
         setupWelcomeScreen,
         displayWinner,
-        displayDraw
+        displayDraw,
+        displayWelcomeScreen
     };
 
 })(document);
