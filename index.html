@@ -32,13 +32,31 @@
 
     <div id="welcome-modal-container">
         <div id="welcome-modal-flex">
-            <label for="grid-size-input">What size would you like the grid? (3 => 3*3)</label>
-            <input id="grid-size-input" name="grid-size-input" type="number" min="3", max="20">
-            <label for="num-players-input">How many people would like to play?</label>
-            <input id="num-players-input" name="num-players-input" type="number" min="2" max="8">
-            <label for="winning-line-input">How how long is a winning line?</label>
-            <input id="winning-line-input" name="winning-line-input" type="number" min="3"
-            max="20">
+            <div id="radio-grid">
+                <label id="radio-buttons-title">Select a Mode</label>
+                <label for="tic-tac-toe-radio">Tic-Tac-Toe</label>
+                <label for="connect-four-radio">Connect Four</label>
+                <label for="custom-radio">Custom</label>
+                <div id="radio-container">
+                    <input id="tic-tac-toe-radio" name="game-mode" type="radio" checked="checked">
+                    <input id="connect-four-radio" name="game-mode" type="radio">
+                    <input id="custom-radio" name="game-mode" type="radio">
+                </div>
+            </div>
+            <div id="custom-options" class="slide-in">
+                <label for="grid-size-input">What size would you like the grid?</label>
+                <p id="grid-size-input-hint">(3 => 3*3)</p>
+                <input id="grid-size-input" name="grid-size-input" type="number" min="3", max="20">
+                <label for="num-players-input">How many people would like to play?</label>
+                <input id="num-players-input" name="num-players-input" type="number" min="2" max="8">
+                <label for="winning-line-input">How how long is a winning line?</label>
+                <input id="winning-line-input" name="winning-line-input" type="number" min="3"
+                max="20">
+            </div>
+            <div id="tic-tac-toe-description">A classic game of tic-tac-toe<br>with two
+                players,<br>a 3*3 grid<br>and 3-in-a-row to win!</div>
+            <div id="connect-four-description" class="slide-in">A fast-paced game of connect
+                four<br>with two players,<br>an 8*8 grid<br>Connect 4 to win!</div>
             <button type="button" id="welcome-modal-confirm-btn">Confirm</button>
         </div>
     </div>
