@@ -41,6 +41,7 @@ body {
   min-height: 100vh;
   text-rendering: optimizeSpeed;
   line-height: 1.5;
+
 }
 
 /* A elements that don't have a class get default styles */
@@ -95,10 +96,14 @@ select {
     --gap-2: 1.5rem;
     --gap-3: 2rem;
     --grid-size: 3;
+
+    --animate-snap: cubic-bezier(.54,0,1,.56);
+    --animate-slow-start: cubic-bezier(.69,.08,.44,.82);
 }
 
 body {
-    font-size: clamp(18px, 1.4rem, 22px);
+    font-size: clamp(20px, 2.2rem, 26px);
+    font-family: "Chakra Petch", Arial, Helvetica, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 button {
@@ -112,8 +117,8 @@ button {
     border-radius: 8px;
     scale: 1;
     box-shadow: 0 2px 3px hsla(0, 10%, 20%, 0.6);
-    transition: scale 150ms ease-in-out,
-                box-shadow 150ms ease-in-out;
+    transition: scale 150ms var(--animate-slow-start),
+                box-shadow 150ms var(--animate-slow-start);
 }
 
 button:hover,
@@ -175,18 +180,15 @@ div[id^="player"][id$="card"] {
     scale: 1;
     border: none;
     box-shadow: none;
-    transition: scale 200ms ease-in-out,
-                border 200ms ease-in-out,
-                box-shadow 200ms ease-in-out;
+    transition: scale 200ms var(--animate-slow-start),
+                border 200ms var(--animate-slow-start),
+                box-shadow 200ms var(--animate-slow-start);
 }
 
 div[id^="player"][id$="card"].current-player {
     scale: 1.2;
     border: 1px solid hsl(var(--base-hue), var(--sat-5), var(--light-5));
     box-shadow: 0 2px 5px hsl(var(--base-hue), var(--sat-5), var(--light-5));
-    transition: scale 200ms ease-in-out,
-                border 200ms ease-in-out,
-                box-shadow 200ms ease-in-out;
 }
 
 #inner-grid {
@@ -212,7 +214,7 @@ div[id^="player"][id$="card"].current-player {
     background: hsl(var(--bg-hue), var(--sat-50), var(--light-5));
 
     border-radius: 3px;
-    transition: background 150ms ease-in-out;
+    transition: background 150ms var(--animate-slow-start);
 }
 
 /* MODALS */
@@ -355,8 +357,8 @@ div[id^="player"][id$="card"].current-player {
     gap: 0.5rem;
     opacity: 1;
     left: 0;
-    transition: opacity 150ms ease-in-out,
-                left 300ms ease-in-out;
+    transition: opacity 150ms var(--animate-slow-start),
+                left 300ms var(--animate-slow-start);
 }
 
 #custom-options > input {
@@ -371,8 +373,8 @@ div[id^="player"][id$="card"].current-player {
     top: 45vh;
     opacity: 1;
     text-align: center;
-    transition: opacity 150ms ease-in-out,
-                left 300ms ease-in-out;
+    transition: opacity 150ms var(--animate-slow-start),
+                left 300ms var(--animate-slow-start);
 }
 
 #tic-tac-toe-description.slide-out,
@@ -393,7 +395,11 @@ div[id^="player"][id$="card"].current-player {
     max-height: 30px;
 }
 
-#welcome-modal-confirm-btn:after {
+#confirm-button-wrapper {
+    position: relative;
+}
+
+#confirm-button-wrapper:after {
     position: absolute;
     content: "";
     width: 170%;
@@ -403,35 +409,29 @@ div[id^="player"][id$="card"].current-player {
     opacity: 0.8;
     top: -40%;
     left: -35%;
-    scale: 1;
-    transition: scale 150ms ease-in-out;
-}
-#welcome-modal-confirm-btn:after:hover,
-#welcome-modal-confirm-btn:after:focus-within {
-    scale: 0.8;
 }
 
 /* WELCOME ANIMATION */
 
 #animation-container {
     position: relative;
-    height: 70rem;
-    width: 70rem;
+    height: min(98vw, 98vh);
+    width: min(98vw, 98vh);
 }
 
 #animation-container > .square {
     --bg-hue: var(--base-hue);
     background: hsl(var(--bg-hue), var(--sat-5), var(--light-90));
-    --box-size: min(8em, 8em);
+    --box-size: min(30vw, 30vh);
 
     position: absolute;
     width: var(--box-size);
     height: var(--box-size);
 
     border-radius: 3px;
-    transition: opacity 200ms ease-in-out,
-                top 200ms ease-in-out,
-                left 200ms ease-in-out;
+    transition: opacity 200ms var(--animate-slow-start),
+                top 200ms var(--animate-slow-start),
+                left 200ms var(--animate-slow-start);
 }
 
 .square-1 {
@@ -481,48 +481,48 @@ div[id^="player"][id$="card"].current-player {
 }
 
 .square-1.settle {
-    top: 5.5em;
-    left: 5.5em;
+    top: 0;
+    left: 0;
     opacity: 1;
 }
 .square-2.settle {
-    top: 5.5em;
-    left: 15.5em;
+    top: 0;
+    left: 35%;
     opacity: 1;
 }
 .square-3.settle {
-    top: 5.5em;
-    left: 25.5em;
+    top: 0;
+    left: 70%;
     opacity: 1;
 }
 .square-4.settle {
-    top: 15.5em;
-    left: 5.5em;
+    top: 35%;
+    left: 0;
     opacity: 1;
 }
 .square-5.settle {
-    top: 15.5em;
-    left: 15.5em;
+    top: 35%;
+    left: 35%;
     opacity: 1;
 }
 .square-6.settle {
-    top: 15.5em;
-    left: 25.5em;
+    top: 35%;
+    left: 70%;
     opacity: 1;
 }
 .square-7.settle {
-    top: 25.5em;
-    left: 5.5em;
+    top: 70%;
+    left: 0;
     opacity: 1;
 }
 .square-8.settle {
-    top: 25.5em;
-    left: 15.5em;
+    top: 70%;
+    left: 35%;
     opacity: 1;
 }
 .square-9.settle {
-    top: 25.5em;
-    left: 25.5em;
+    top: 70%;
+    left: 70%;
     opacity: 1;
 }
 
@@ -530,14 +530,14 @@ div[id^="player"][id$="card"].current-player {
     position: absolute;
     z-index: 200;
     background: hsl(0, 80%, 70%);
-    width: 60px;
-    height: 10px;
+    width: min(20vh, 20vw);
+    height: min(2vh, 2vw);
     border-radius: 9999px;
     transform: rotate(45deg);
     scale: 8;
     opacity: 0;
-    transition: scale 150ms ease-in-out,
-                opacity 150ms ease-in-out;
+    transition: scale 150ms var(--animate-snap),
+                opacity 150ms var(--animate-snap);
 }
 
 .cross::before {
@@ -546,8 +546,8 @@ div[id^="player"][id$="card"].current-player {
     content: "";
     z-index: 200;
     background: hsl(0, 80%, 70%);
-    width: 60px;
-    height: 10px;
+    width: min(20vh, 20vw);
+    height: min(2vh, 2vw);
     border-radius: 9999px;
 }
 
@@ -557,31 +557,31 @@ div[id^="player"][id$="card"].current-player {
 }
 
 .x-1 {
-    top: 9.1em;
-    left: 7.8em;
+    top: 15%;
+    left: 5%;
 }
 
 .x-2 {
-    top: 19.1em;
-    left: 17.8em;
+    top: 50%;
+    left: 40%;
 }
 .x-3 {
-    top: 29.1em;
-    left: 27.8em;
+    top: 85%;
+    left: 75%;
 }
 
 .circle {
     position: absolute;
     z-index: 200;
     background: transparent;
-    width: 60px;
-    height: 60px;
-    border: 11px solid hsl(240, 80%, 70%);
-    border-radius: 30px;
+    width: min(15vh, 15vw);
+    height: min(15vh, 15vw);
+    border: min(2vw, 2vh) solid hsl(240, 80%, 70%);
+    border-radius: 50%;
     scale: 8;
     opacity: 0;
-    transition: scale 150ms ease-in-out,
-                opacity 150ms ease-in-out;
+    transition: scale 150ms var(--animate-snap),
+                opacity 150ms var(--animate-snap);
 }
 
 .circle.active {
@@ -590,29 +590,46 @@ div[id^="player"][id$="card"].current-player {
 }
 
 .o-1 {
-    top: 7.95em;
-    left: 17.9em;
+    top: 8%;
+    left: 42%;
 }
 .o-2 {
-    top: 17.95em;
-    left: 27.9em;
+    top: 43%;
+    left: 77%;
 }
 
-.cross-line {
+.cross-line.left {
     position: absolute;
     z-index: 300;
 
-    top: 19em;
-    left: 1.4em;
+    top: 48%;
+    left: -9%;
     background: hsl(0, 80%, 70%);
-    width: 95%;
-    height: 20px;
+    width: min(120vw, 120vh);
+    height: min(5vw, 5vh);
     opacity: 0;
     scale: 8;
     border-radius: 9999px;
     transform: rotate(45deg);
-    transition: scale 150ms ease-in-out,
-                opacity 150ms ease-in-out;
+    transition: width 150ms var(--animate-snap),
+                opacity 150ms var(--animate-snap);
+}
+
+.cross-line.right {
+    position: absolute;
+    z-index: 300;
+
+    top: 48%;
+    left: -9%;
+    background: hsl(0, 80%, 70%);
+    width: min(120vw, 120vh);
+    height: min(5vw, 5vh);
+    opacity: 0;
+    scale: 8;
+    border-radius: 9999px;
+    transform: rotate(-45deg);
+    transition: scale 150ms var(--animate-snap),
+                opacity 150ms var(--animate-snap);
 }
 
 .cross.active {
