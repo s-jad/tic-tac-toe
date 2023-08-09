@@ -37,7 +37,7 @@ export const App = (() => {
             GameBoard.startGame();
         } else if (gameState.gameStarted === 1 && gameState.gameWon === 1) {
             gameState.gameStarted = gameState.gameStarted ^ 1;
-            Display.displayWinner(GameBoard.getWinner());
+            Display.winningAnimation();
         } else if (gameState.gameStarted === 1 && gameState.gameDraw === 1) {
             gameState.gameStarted = gameState.gameStarted ^ 1;
             Display.displayDraw();
