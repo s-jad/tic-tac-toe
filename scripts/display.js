@@ -60,7 +60,8 @@ export const Display = ((doc) => {
         const squares = Array.from(welcomeAnimationContainer.querySelectorAll('.square'));
         const crosses = Array.from(welcomeAnimationContainer.querySelectorAll('.cross'));
         const circles = Array.from(welcomeAnimationContainer.querySelectorAll('.circle'));
-        const crossLine = welcomeAnimationContainer.querySelector('.cross-line');
+        const crossLine = welcomeAnimationContainer.querySelector('.cross-line.left');
+        const crossLineRight = welcomeAnimationContainer.querySelector('.cross-line.right');
 
         const crossesAndCircles = crosses.map((cross, index) => {
             return [cross, circles[index]];
@@ -88,12 +89,17 @@ export const Display = ((doc) => {
                     crossOrCircle.classList.remove('active');
                 });
             }, 350);
+
+            setTimeout(() => {
+                crossLineRight.classList.add('active');
+            }, 850);
+
         }, 210 * squares.length + 310 * crossesAndCircles.length);
 
         setTimeout(() => {
             welcomeAnimationContainer.classList.remove("active");
             setupWelcomeScreen();
-        }, 6600);
+        }, 6750);
 
     };
 
