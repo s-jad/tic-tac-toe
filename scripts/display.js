@@ -31,11 +31,23 @@ export const Display = ((doc) => {
         return list.match(player);
     };
 
+    const checkWinningLine = (winningNumbers, list) => {
+        const inWinningLine = winningNumbers.map(num => {
+            const isWinner = list.includes(num);
+            return isWinner;
+        });
+
+        return inWinningLine.some(winner => winner === true);
+    };
+
 
     const winningAnimation = () => {
         const gameGrid = document.getElementById('inner-grid');
         const squares = Array.from(gameGrid.querySelectorAll(".square"));
         const winner = "player-" + GameBoard.getWinner();
+        let winningNumbers = GameBoard.getWinningSquares();
+
+        winningNumbers = winningNumbers.map(num => `num-${num}`);
 
         let winners = [];
         let losers = [];
@@ -43,7 +55,12 @@ export const Display = ((doc) => {
         squares.forEach((square) => {
             const classList = square.classList.toString();
             if (checkWinnerInClassList(winner, classList)) {
-                winners.push(square);
+                if (checkWinningLine(winningNumbers, classList)) {
+                    winners.push(square);
+                }
+                else {
+                    losers.push(square);
+                }
             } else {
                 losers.push(square);
             }
@@ -54,7 +71,7 @@ export const Display = ((doc) => {
         losers.forEach((square, index) => {
             setTimeout(() => {
                 square.classList.add('losing-square');
-            }, 20 * index);
+            }, 30 * index);
         });
 
         winners.forEach((square, index) => {
@@ -62,16 +79,17 @@ export const Display = ((doc) => {
                 square.classList.add('winning-square');
             }, 400 * index);
             setTimeout(() => {
-                square.style.boxShadow = `0 0 20px hsl(${winnerHue}, var(--sat-90), 70%),
-                                          inset 0 0 20px hsl(${winnerHue}, var(--sat-90), 70%),
-                                          inset 0 0 5px hsl(${winnerHue}, var(--sat-90), 90%)`;
+                square.style.boxShadow = `0 0 30px hsl(${winnerHue}, var(--sat-90), 70%),
+                                          0 0 10px hsl(${winnerHue}, var(--sat-90), 90%),
+                                          inset 0 0 30px hsl(${winnerHue}, var(--sat-90), 70%),
+                                          inset 0 0 10px hsl(${winnerHue}, var(--sat-90), 90%)`;
             }, 650 * index);
         });
 
 
         setTimeout(() => {
             displayWinner(GameBoard.getWinner);
-        }, winners.length * 600 + 400);
+        }, winners.length * 650 + 650);
     };
 
     const displayWinner = () => {
