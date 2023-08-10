@@ -40,7 +40,7 @@ export const App = (() => {
             Display.winningAnimation();
         } else if (gameState.gameStarted === 1 && gameState.gameDraw === 1) {
             gameState.gameStarted = gameState.gameStarted ^ 1;
-            Display.displayDraw();
+            Display.drawAnimation();
         }
     };
 

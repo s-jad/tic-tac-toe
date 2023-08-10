@@ -2,6 +2,15 @@ import { App } from "./app.js"
 import { GameBoard } from "./game_board.js"
 
 export const Display = ((doc) => {
+
+    const displayWelcomeScreen = () => {
+        const welcomeModal = document.getElementById("welcome-modal-container");
+        const welcomeModalFlex = document.getElementById("welcome-modal-flex");
+
+        welcomeModal.classList.add('active');
+        welcomeModalFlex.classList.remove('fade');
+    };
+
     const displayDraw = () => {
         const displayDrawModal = document.getElementById('display-draw-container');
         const displayDrawFlex = document.getElementById('display-draw-flex');
@@ -27,6 +36,34 @@ export const Display = ((doc) => {
         displayDrawFlex.classList.remove('fade');
     };
 
+    const displayWinner = () => {
+        const displayWinnerModal = document.getElementById('display-winner-container');
+        const displayWinnerFlex = document.getElementById('display-winner-flex');
+        const winnerDisplay = document.getElementById('winner-display');
+        const newGameBtn = displayWinnerFlex.querySelector('.new-game-btn');
+        const welcomeModal = document.getElementById('welcome-modal-container');
+        const welcomeModalFlex = document.getElementById('welcome-modal-flex');
+
+        winnerDisplay.innerText = `Player ${GameBoard.getWinner()} has won!`;
+
+        newGameBtn.addEventListener('click', function() {
+            // Close the display winner modal
+            displayWinnerModal.classList.remove('active');
+            displayWinnerFlex.classList.add('fade');
+
+            // Reset gameState and board state
+            App.resetGameState();
+            GameBoard.resetGameBoard();
+
+            // Open the welcome modal
+            welcomeModal.classList.add('active');
+            welcomeModalFlex.classList.remove('fade');
+        });
+
+        displayWinnerModal.classList.add('active');
+        displayWinnerFlex.classList.remove('fade');
+    };
+
     const checkWinnerInClassList = (player, list) => {
         return list.match(player);
     };
@@ -40,6 +77,23 @@ export const Display = ((doc) => {
         return inWinningLine.some(winner => winner === true);
     };
 
+
+
+
+    const drawAnimation = () => {
+        const gameGrid = document.getElementById('inner-grid');
+        const squares = Array.from(gameGrid.querySelectorAll(".square"));
+
+        squares.forEach((square, index) => {
+            setTimeout(() => {
+                square.classList.add('losing-square');
+            }, 30 * index);
+        });
+
+        setTimeout(() => {
+            displayDraw();
+        }, squares.length * 30 + 650);
+    }
 
     const winningAnimation = () => {
         const gameGrid = document.getElementById('inner-grid');
@@ -90,34 +144,6 @@ export const Display = ((doc) => {
         setTimeout(() => {
             displayWinner(GameBoard.getWinner);
         }, winners.length * 650 + 650);
-    };
-
-    const displayWinner = () => {
-        const displayWinnerModal = document.getElementById('display-winner-container');
-        const displayWinnerFlex = document.getElementById('display-winner-flex');
-        const winnerDisplay = document.getElementById('winner-display');
-        const newGameBtn = displayWinnerFlex.querySelector('.new-game-btn');
-        const welcomeModal = document.getElementById('welcome-modal-container');
-        const welcomeModalFlex = document.getElementById('welcome-modal-flex');
-
-        winnerDisplay.innerText = `Player ${GameBoard.getWinner()} has won!`;
-
-        newGameBtn.addEventListener('click', function() {
-            // Close the display winner modal
-            displayWinnerModal.classList.remove('active');
-            displayWinnerFlex.classList.add('fade');
-
-            // Reset gameState and board state
-            App.resetGameState();
-            GameBoard.resetGameBoard();
-
-            // Open the welcome modal
-            welcomeModal.classList.add('active');
-            welcomeModalFlex.classList.remove('fade');
-        });
-
-        displayWinnerModal.classList.add('active');
-        displayWinnerFlex.classList.remove('fade');
     };
 
     const welcomeAnimation = () => {
@@ -285,20 +311,13 @@ export const Display = ((doc) => {
         });
     };
 
-    const displayWelcomeScreen = () => {
-        const welcomeModal = document.getElementById("welcome-modal-container");
-        const welcomeModalFlex = document.getElementById("welcome-modal-flex");
-
-        welcomeModal.classList.add('active');
-        welcomeModalFlex.classList.remove('fade');
-    };
 
     return {
         welcomeAnimation,
         setupWelcomeScreen,
         displayWelcomeScreen,
         winningAnimation,
-        displayDraw,
+        drawAnimation,
     };
 
 })(document);

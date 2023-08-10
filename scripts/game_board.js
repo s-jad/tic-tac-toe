@@ -92,6 +92,8 @@ export const GameBoard = ((doc) => {
         square.classList.add(state.players[state.currentPlayerIndex]);
         markWithPlayerColor(square);
         addSquareToCurrentPlayerMoves(square);
+        const draw = checkDraw();
+        console.log(`Game was a draw? => ${draw}`);
         const winningDetails = checkWinner();
 
         if (winningDetails) {
@@ -100,8 +102,12 @@ export const GameBoard = ((doc) => {
             console.log(`Winning details => ${state.winner} , ${state.winningSquares}`);
             App.setGameWon();
             App.switchState();
+        } else if (draw) {
+            App.setGameDraw();
+            App.switchState();
+        } else {
+            switchCurrentPlayer();
         }
-        switchCurrentPlayer();
         removeSquareEvents(square);
     };
 
@@ -229,9 +235,10 @@ export const GameBoard = ((doc) => {
     }
 
     const checkDraw = () => {
-        if (state.currentPlayerMoves.length === state.gridNumber * state.gridNumber) {
-            App.setGameDraw();
+        if (state.currentPlayerMoves.length === state.gridNumber) {
+            return true;
         }
+        return false;
     };
 
     // PUBLIC FUNCTIONS
