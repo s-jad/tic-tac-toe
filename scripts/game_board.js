@@ -109,25 +109,13 @@ export const GameBoard = ((doc) => {
         square.removeEventListener('click', getSquareEvents);
     };
 
-    const checkTicTacToeWinner = () => {
-        console.log("TODO checkTicTacToeWinner");
-    };
-
-
     const checkWinner = () => {
-        const ticTacToe = document.getElementById('tic-tac-toe-radio');
-
-        if (ticTacToe.checked) {
-            return checkTicTacToeWinner()
-        }
-
         for (let i = 0; i < state.currentPlayerMoves.length; i++) {
             const currentPlayer = state.currentPlayerMoves[i].player;
             const currentStartingSq = state.currentPlayerMoves[i].square;
 
             const horizontalWin = checkWinnerHorizontal(currentStartingSq, currentPlayer);
             const verticalWin = checkWinnerVertical(currentStartingSq, currentPlayer);
-
             const diagonalWin = checkWinnerDiagonal(currentStartingSq, currentPlayer);
 
             if (horizontalWin) {
@@ -145,6 +133,15 @@ export const GameBoard = ((doc) => {
 
     };
 
+    const horizontalWrapAroundCheck = (moves) => {
+        const middleSquares = moves.slice(0, -1);
+        if (middleSquares.some(move => move.square % state.selectedNumColumns === 0)) {
+            return false;
+        } else {
+            return true;
+        }
+    };
+
     const checkWinnerHorizontal = (index, player) => {
         const horizontalCheck = state.currentPlayerMoves.filter(move =>
             move.player === player &&
@@ -152,11 +149,23 @@ export const GameBoard = ((doc) => {
             move.square < index + state.winningLineLength
         );
 
-        if (horizontalCheck.length === state.winningLineLength) {
+        if (
+            horizontalCheck.length === state.winningLineLength &&
+            horizontalWrapAroundCheck(horizontalCheck)
+        ) {
             const winningSquares = horizontalCheck.map((move) => move.square);
             const winningPlayer = horizontalCheck[0].player;
             return { winningSquares, winningPlayer };
         }
+    };
+
+    const verticalWrapAroundCheck = (moves) => {
+        for (let i = 1; i < moves.length; i++) {
+            if (moves[i].square !== moves[i - 1].square + state.selectedNumColumns) {
+                return false;
+            }
+        }
+        return true;
     };
 
     const checkWinnerVertical = (index, player) => {
@@ -166,7 +175,10 @@ export const GameBoard = ((doc) => {
             move.square < (state.selectedNumColumns * (state.winningLineLength - 1)) + index
         );
 
-        if (verticalCheck.length === state.winningLineLength) {
+        if (
+            verticalCheck.length === state.winningLineLength &&
+            verticalWrapAroundCheck(verticalCheck)
+        ) {
             const winningSquares = verticalCheck.map((move) => move.square);
             const winningPlayer = verticalCheck[0].player;
             return { winningSquares, winningPlayer };
