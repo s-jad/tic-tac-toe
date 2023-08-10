@@ -125,14 +125,17 @@ export const GameBoard = ((doc) => {
             const diagonalWin = checkWinnerDiagonal(currentStartingSq, currentPlayer);
 
             if (horizontalWin) {
+                console.log("Horizontal win");
                 return horizontalWin;
             }
 
             if (verticalWin) {
+                console.log("Vertical win");
                 return verticalWin;
             }
 
             if (diagonalWin) {
+                console.log("Diagonal win");
                 return diagonalWin;
             }
         }
@@ -140,6 +143,8 @@ export const GameBoard = ((doc) => {
     };
 
     const horizontalWrapAroundCheck = (moves) => {
+        // If any of the middle squares of the line are in the last column
+        // Return false, not a true horizontal win
         const middleSquares = moves.slice(0, -1);
         if (middleSquares.some(move => move.square % state.selectedNumColumns === 0)) {
             return false;
@@ -166,8 +171,13 @@ export const GameBoard = ((doc) => {
     };
 
     const verticalWrapAroundCheck = (moves) => {
+        // If consecutive moves arent seperated in value by no. of columns
+        // Return false, not a true vertical win
         for (let i = 1; i < moves.length; i++) {
-            if (moves[i].square !== moves[i - 1].square + state.selectedNumColumns) {
+            if (moves[i].square !== moves[i - 1].square + parseInt(state.selectedNumColumns)) {
+                console.log(`moves[i].square => ${moves[i].square}`);
+                console.log(`moves[i-1].square => ${moves[i - 1].square}`);
+                console.log(`vWrapAroundCHeck => ${moves[i].square} !== ${moves[i - 1].square + parseInt(state.selectedNumColumns)}`)
                 return false;
             }
         }
@@ -191,6 +201,20 @@ export const GameBoard = ((doc) => {
         }
     };
 
+    const diagonalSameRowCheck = (moves) => {
+        // If two consecutive moves are in the same row
+        // Return false, not a true diagonal win
+        for (let i = 1; i < moves.length; i++) {
+            const move1 = Math.ceil(moves[i].square / state.selectedNumColumns);
+            const move2 = Math.ceil(moves[i - 1].square / state.selectedNumColumns);
+
+            if (move1 === move2) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     const checkWinnerDiagonal = (index, player) => {
         const colNum = parseInt(state.selectedNumColumns);
         const playerMoves = state.currentPlayerMoves.filter(move => move.player === player && move.square >= index);
@@ -208,7 +232,9 @@ export const GameBoard = ((doc) => {
                 diagonalBufferRight.push(currentMove[0]);
             }
 
-            if (diagonalBufferRight.length >= state.winningLineLength) {
+            if (diagonalBufferRight.length >= state.winningLineLength &&
+                diagonalSameRowCheck(diagonalBufferRight)
+            ) {
                 const winningSquares = diagonalBufferRight.map((move) => move.square);
                 const winningPlayer = diagonalBufferRight[0].player;
                 return { winningSquares, winningPlayer };
@@ -225,7 +251,9 @@ export const GameBoard = ((doc) => {
                 diagonalBufferLeft.push(currentMove[0]);
             }
 
-            if (diagonalBufferLeft.length >= state.winningLineLength) {
+            if (diagonalBufferLeft.length >= state.winningLineLength &&
+                diagonalSameRowCheck(diagonalBufferLeft)
+            ) {
                 const winningSquares = diagonalBufferLeft.map((move) => move.square);
                 const winningPlayer = diagonalBufferLeft[0].player;
                 return { winningSquares, winningPlayer };
