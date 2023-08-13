@@ -70,15 +70,15 @@ export const Display = ((doc) => {
 
     const checkWinningLine = (winningNumbers, list) => {
         const inWinningLine = winningNumbers.map(num => {
+            console.log(`num => ${num}`);
+            console.log(`list => ${list}`);
             const isWinner = list.includes(num);
+            console.log(`isWinner => ${isWinner}`);
             return isWinner;
         });
 
         return inWinningLine.some(winner => winner === true);
     };
-
-
-
 
     const drawAnimation = () => {
         const gameGrid = document.getElementById('inner-grid');
@@ -100,7 +100,7 @@ export const Display = ((doc) => {
         const squares = Array.from(gameGrid.querySelectorAll(".square"));
         const winner = "player-" + GameBoard.getWinner();
         let winningNumbers = GameBoard.getWinningSquares();
-
+        console.log(`Winning numbers => ${winningNumbers}`);
         winningNumbers = winningNumbers.map(num => `num-${num}`);
 
         let winners = [];
@@ -110,6 +110,8 @@ export const Display = ((doc) => {
             const classList = square.classList.toString();
             if (checkWinnerInClassList(winner, classList)) {
                 if (checkWinningLine(winningNumbers, classList)) {
+                    console.log(checkWinningLine(winningNumbers, classList));
+                    console.log(square);
                     winners.push(square);
                 }
                 else {
@@ -195,16 +197,12 @@ export const Display = ((doc) => {
 
     const openCustomOptions = () => {
         const customOptions = document.getElementById('custom-options');
-        customOptions.classList.remove('slide-in');
+        customOptions.classList.remove('slide-out');
     };
 
     const closeCustomOptions = () => {
         const customOptions = document.getElementById('custom-options');
         customOptions.classList.add('slide-out');
-        setTimeout(() => {
-            customOptions.classList.add('slide-in');
-            customOptions.classList.remove('slide-out');
-        }, 310);
     };
 
     const openTicTacToeDescription = () => {
@@ -214,25 +212,43 @@ export const Display = ((doc) => {
 
     const closeTicTacToeDescription = () => {
         const ticTacToe = document.getElementById('tic-tac-toe-description');
-        ticTacToe.classList.add('slide-out');
-        setTimeout(() => {
-            ticTacToe.classList.add('slide-in');
-            ticTacToe.classList.remove('slide-out');
-        }, 310);
+        ticTacToe.classList.add('slide-in');
     };
 
     const openConnectFourDescription = () => {
         const customOptions = document.getElementById('connect-four-description');
         customOptions.classList.remove('slide-in');
+        customOptions.classList.remove('slide-out');
     };
 
-    const closeConnectFourDescription = () => {
+    const closeConnectFourDescription = (direction) => {
         const connectFour = document.getElementById('connect-four-description');
-        connectFour.classList.add('slide-out');
-        setTimeout(() => {
-            connectFour.classList.add('slide-in');
-            connectFour.classList.remove('slide-out');
-        }, 310);
+
+        const ownDirection = 2;
+        if (direction < ownDirection) {
+            console.log("Coming from tic-tac-toe");
+            connectFour.classList.add('slide-out');
+        } else if (direction > ownDirection) {
+            console.log("Coming from custom options");
+            connectFour.classList.add("slide-in");
+        }
+    };
+
+    const animateRadioButton = (ticTac, connect, custom, lastRadio) => {
+        const floatingButton = document.getElementById('floating-radio-button');
+
+        floatingButton.classList.remove(lastRadio.class);
+
+        if (ticTac.checked) {
+            floatingButton.classList.add("tic-tac-toe-checked");
+            return { class: "tic-tac-toe-checked", num: 1 };
+        } else if (connect.checked) {
+            floatingButton.classList.add("connect-four-checked");
+            return { class: "connect-four-checked", num: 2 };
+        } else if (custom.checked) {
+            floatingButton.classList.add("custom-checked");
+            return { class: "custom-checked", num: 3 };
+        }
     };
 
     const setupWelcomeScreen = () => {
@@ -246,25 +262,34 @@ export const Display = ((doc) => {
         const ticTacToeRadio = document.getElementById("tic-tac-toe-radio");
         const connectFourRadio = document.getElementById("connect-four-radio");
         const customRadio = document.getElementById("custom-radio");
-        const radioContainer = document.getElementById('radio-container');
+        const radioContainer = document.getElementById('radio-grid');
+
+        let lastRadioClicked = { class: "tic-tac-toe-checked", num: 1 };
+
+        // 0 is left
+        let direction = 0
 
         // Open the modal
         welcomeModal.classList.add("active");
 
         const handleRadioChange = () => {
+            const newRadioClicked = animateRadioButton(ticTacToeRadio, connectFourRadio, customRadio, lastRadioClicked);
+            const direction = newRadioClicked.num;
+
             if (ticTacToeRadio.checked) {
-                closeCustomOptions();
-                closeConnectFourDescription();
-                openTicTacToeDescription();
+                closeCustomOptions(direction);
+                closeConnectFourDescription(direction);
+                openTicTacToeDescription(direction);
             } else if (connectFourRadio.checked) {
-                closeCustomOptions();
-                closeTicTacToeDescription();
-                openConnectFourDescription();
+                closeCustomOptions(direction);
+                closeTicTacToeDescription(direction);
+                openConnectFourDescription(direction);
             } else if (customRadio.checked) {
-                closeTicTacToeDescription();
-                closeConnectFourDescription();
-                openCustomOptions();
+                closeTicTacToeDescription(direction);
+                closeConnectFourDescription(direction);
+                openCustomOptions(direction);
             }
+            lastRadioClicked = newRadioClicked;
         };
 
         radioContainer.addEventListener('change', handleRadioChange);
@@ -311,6 +336,10 @@ export const Display = ((doc) => {
         });
     };
 
+    const radioButtonAnimation = (clicked, lastClicked) => {
+        const hiddenRadioButtons = document.querySelectorAll('input[type="radio"]');
+
+    };
 
     return {
         welcomeAnimation,

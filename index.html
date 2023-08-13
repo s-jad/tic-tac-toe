@@ -37,17 +37,25 @@
     <div id="welcome-modal-container">
         <div id="welcome-modal-flex">
             <div id="radio-grid">
+                <div id="floating-radio-button" class="tic-tac-toe-checked">
+                    <div class="radio-button-foreground"></div>
+                    <div class="radio-button-background"></div>
+                </div>
                 <label id="radio-buttons-title">Select a Mode</label>
-                <label for="tic-tac-toe-radio">Tic-Tac-Toe</label>
-                <label for="connect-four-radio">Connect Four</label>
-                <label for="custom-radio">Custom</label>
-                <div id="radio-container">
+                <div id="tic-tac-toe-container" class="radio-container">
+                    <label for="tic-tac-toe-radio">Tic-Tac-Toe</label>
                     <input id="tic-tac-toe-radio" name="game-mode" type="radio" checked="checked">
+                </div>
+                <div id="connect-four-container" class="radio-container">
+                    <label for="connect-four-radio">Connect Four</label>
                     <input id="connect-four-radio" name="game-mode" type="radio">
+                </div>
+                <div id="custom-container" class="radio-container">
+                    <label for="custom-radio">Custom</label>
                     <input id="custom-radio" name="game-mode" type="radio">
                 </div>
             </div>
-            <div id="custom-options" class="slide-in">
+            <div id="custom-options" class="slide-out">
                 <label for="grid-size-input">What size would you like the grid?</label>
                 <p id="grid-size-input-hint">(3 => 3*3)</p>
                 <input id="grid-size-input" name="grid-size-input" type="number" min="3", max="20">
@@ -59,7 +67,7 @@
             </div>
             <div id="tic-tac-toe-description">A classic game of tic-tac-toe<br>with two
                 players,<br>a 3*3 grid<br>and 3-in-a-row to win!</div>
-            <div id="connect-four-description" class="slide-in">A fast-paced game of connect
+            <div id="connect-four-description" class="slide-out">A fast-paced game of connect
                 four<br>with two players,<br>an 8*8 grid<br>Connect 4 to win!</div>
             <div id="confirm-button-wrapper">
                 <button type="button" id="welcome-modal-confirm-btn">Confirm</button>
